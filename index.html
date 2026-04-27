@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Фишичный | Тетрадь Судьбы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a1a;
+            background-image: radial-gradient(circle at 25% 40%, #2a2418 2%, #0f0e0a 98%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Courier New', 'Cascadia Code', 'Fira Code', monospace;
+            padding: 32px 24px;
+        }
+
+        /* Тетрадный лист — состаренный, тёмный, с глубокими тенями */
+        .notebook {
+            max-width: 1400px;
+            width: 100%;
+            background: #1f1c16;
+            background-image: 
+                linear-gradient(#2e2a20 1px, transparent 1px),
+                linear-gradient(90deg, #2e2a20 1px, transparent 1px);
+            background-size: 32px 32px;
+            background-position: 48px 0, 48px 0;
+            position: relative;
+            border-radius: 28px 16px 32px 20px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.6), inset 0 0 0 2px #5e4c34, inset 0 0 0 6px #2f271c;
+            transition: all 0.2s;
+            padding: 38px 28px 48px 85px;
+        }
+
+        /* Левое поле — усиленная тёмная линия, как старая тетрадь */
+        .notebook::before {
+            content: "";
+            position: absolute;
+            top: 28px;
+            bottom: 28px;
+            left: 55px;
+            width: 4px;
+            background: #b34e3a;
+            box-shadow: 1px 0 0 #7a3e2e, -1px 0 0 #3a2a1f;
+            border-radius: 4px;
+            z-index: 2;
+            opacity: 0.8;
+        }
+
+        /* Рисунки на полях — тёмные, будто углём или чернилами */
+        .margin-doodle {
+            position: absolute;
+            left: 8px;
+            font-size: 32px;
+            z-index: 5;
+            pointer-events: none;
+            filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.5)) brightness(0.85);
+            opacity: 0.75;
+            transition: opacity 0.2s;
+        }
+        .doodle1 { top: 8%; transform: rotate(-6deg); left: 6px; font-size: 38px; }
+        .doodle2 { top: 24%; transform: rotate(12deg); left: 2px; font-size: 42px; opacity: 0.6; }
+        .doodle3 { bottom: 28%; transform: rotate(-9deg); left: 10px; font-size: 36px; }
+        .doodle4 { bottom: 12%; transform: rotate(7deg); font-size: 48px; left: 4px; opacity: 0.7; }
+        .doodle5 { top: 48%; left: 0; font-size: 34px; transform: rotate(-18deg); }
+        .doodle6 { top: 72%; left: 6px; font-size: 40px; transform: rotate(10deg); opacity: 0.7; }
+        .doodle7 { top: 88%; left: -2px; font-size: 28px; transform: rotate(-5deg); }
+
+        /* Старые пятна, потёртости, следы свечи/кофе */
+        .stain {
+            position: absolute;
+            background: rgba(45, 35, 22, 0.3);
+            border-radius: 50%;
+            filter: blur(12px);
+            z-index: 1;
+            pointer-events: none;
+            mix-blend-mode: multiply;
+        }
+        .stain1 { width: 140px; height: 140px; bottom: 40px; right: 20px; background: #362813; opacity: 0.4; }
+        .stain2 { width: 200px; height: 90px; top: 120px; left: 40%; background: #2d2416; opacity: 0.35; transform: rotate(25deg); }
+        .stain3 { width: 80px; height: 80px; right: 90px; top: 45%; background: #3f2c16; opacity: 0.45; }
+        .stain4 { width: 150px; height: 70px; bottom: 20%; left: 15%; background: #251e12; opacity: 0.3; filter: blur(18px);}
+
+        .tape {
+            position: absolute;
+            background: rgba(85, 70, 48, 0.55);
+            width: 140px;
+            height: 38px;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-3deg);
+            filter: blur(2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            pointer-events: none;
+            border-radius: 15px 4px 15px 4px;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Контент — выше пятен */
+        .content {
+            position: relative;
+            z-index: 20;
+        }
+
+        /* Заголовок — тяжёлый, мрачный почерк */
+        h1 {
+            font-family: 'Courier New', 'Segoe UI', monospace;
+            font-weight: 900;
+            font-size: 3.8rem;
+            text-align: center;
+            letter-spacing: 4px;
+            color: #ebd5b3;
+            text-shadow: 6px 6px 0px #2c1e12, 2px 2px 15px #00000055;
+            transform: rotate(-0.8deg);
+            word-break: keep-all;
+            margin-bottom: 8px;
+        }
+        .sub {
+            text-align: center;
+            font-family: monospace;
+            font-size: 1rem;
+            color: #bc9f7a;
+            border-bottom: 1px dashed #785e3a;
+            display: inline-block;
+            width: auto;
+            margin: 0 auto 28px;
+            padding-bottom: 8px;
+            letter-spacing: 2px;
+            font-weight: 500;
+            background: #1f1b12a0;
+            padding-left: 16px;
+            padding-right: 16px;
+            border-radius: 60px;
+            backdrop-filter: blur(2px);
+        }
+
+        /* РУЛЕТКА — тёмное, металлическое стекло */
+        .roulette-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 18px 0 38px;
+        }
+        .wheel-wrapper {
+            background: #2b241c;
+            border-radius: 50%;
+            padding: 12px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.6), inset 0 0 0 2px #78623e, inset 0 0 15px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.2s;
+        }
+        .wheel-wrapper:active {
+            transform: scale(0.97);
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%;
+            box-shadow: 0 0 0 6px #3c2e1e, 0 12px 30px black;
+            background: #221e16;
+            transition: all 0.2s;
+        }
+        .spin-btn {
+            background: #2f271d;
+            border: 2px solid #b77b48;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.7rem;
+            padding: 14px 42px;
+            margin-top: 32px;
+            border-radius: 48px;
+            cursor: pointer;
+            color: #ffdfb3;
+            transition: 0.12s linear;
+            box-shadow: 0 6px 0 #4e3a26;
+            letter-spacing: 3px;
+            backdrop-filter: blur(4px);
+            background: #1e1912e6;
+        }
+        .spin-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #4e3a26;
+        }
+        .result-area {
+            margin-top: 28px;
+            font-size: 1.6rem;
+            background: #19150ed9;
+            backdrop-filter: blur(8px);
+            padding: 16px 28px;
+            border-radius: 60px;
+            font-weight: bold;
+            text-align: center;
+            border-left: 8px solid #d1873f;
+            border-right: 2px solid #795e36;
+            font-family: 'Courier New', monospace;
+            color: #ffefcf;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            max-width: 90%;
+        }
+
+        /* 20 карточек — тёмный стиль, состаренные */
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 18px;
+            margin-top: 55px;
+            margin-bottom: 20px;
+        }
+        .char-card {
+            background: #25201ad9;
+            backdrop-filter: blur(3px);
+            padding: 14px 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1rem;
+            font-family: 'Courier New', 'Segoe UI', monospace;
+            border-radius: 32px 12px 32px 12px;
+            border: 1px solid #735e40;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.3);
+            background: #241f18cc;
+            color: #f0ddbc;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+        }
+        .char-card:hover {
+            background: #3e3024;
+            transform: translate(-3px, -3px);
+            border-color: #d49554;
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.4);
+            color: #fff0da;
+        }
+        .char-card:active {
+            transform: translate(2px, 2px);
+            box-shadow: 3px 3px 0px black;
+        }
+
+        .footer-note {
+            text-align: right;
+            font-size: 0.8rem;
+            margin-top: 35px;
+            color: #a58156;
+            border-top: 1px dashed #5f4a30;
+            padding-top: 18px;
+            font-style: italic;
+            font-family: monospace;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 780px) {
+            .notebook {
+                padding: 24px 16px 32px 65px;
+            }
+            h1 { font-size: 2.5rem; }
+            .characters-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+            }
+            canvas { width: 280px; height: 280px; }
+            .result-area { font-size: 1.2rem; }
+            .spin-btn { font-size: 1.3rem; padding: 10px 28px; }
+        }
+
+        @media (max-width: 550px) {
+            .notebook {
+                padding-left: 50px;
+            }
+            .margin-doodle { font-size: 26px; }
+        }
+
+        /* Полоса прокрутки стилизована */
+        ::-webkit-scrollbar {
+            width: 8px;
+            background: #1f1a14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7b5d3a;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="notebook">
+    <!-- Тёмные рисунки на полях, будто углём -->
+    <div class="margin-doodle doodle1">🕯️🐟</div>
+    <div class="margin-doodle doodle2">⚙️💀</div>
+    <div class="margin-doodle doodle3">🖤🍟</div>
+    <div class="margin-doodle doodle4">👹📖</div>
+    <div class="margin-doodle doodle5">🗝️🐚</div>
+    <div class="margin-doodle doodle6">✖️🥔</div>
+    <div class="margin-doodle doodle7">⚡👁️</div>
+
+    <!-- Пятна, потертости -->
+    <div class="stain stain1"></div>
+    <div class="stain stain2"></div>
+    <div class="stain stain3"></div>
+    <div class="stain stain4"></div>
+    <div class="tape"></div>
+
+    <div class="content">
+        <h1>ФИШИЧНЫЙ</h1>
+        <div style="text-align: center;"><span class="sub">✦ ТЕТРАДЬ ИСПЫТАНИЙ ✦</span></div>
+
+        <div class="roulette-container">
+            <div class="wheel-wrapper" id="wheelClickArea">
+                <canvas id="wheelCanvas" width="440" height="440" style="width: 440px; height: 440px;"></canvas>
+            </div>
+            <button class="spin-btn" id="spinButton">◉ КРУТИТЬ РУЛЕТКУ ◉</button>
+            <div class="result-area" id="resultMessage">⟡ нажми на рулетку или карточку ⟡</div>
+        </div>
+
+        <!-- 20 мест: картошка фишичный, злой, никита и остальные -->
+        <div class="characters-grid" id="charactersGrid"></div>
+        <div class="footer-note">📌 кликни на любого — рулетка вытянет его фишичную суть</div>
+    </div>
+</div>
+
+<script>
+    // --------------------- 20 ТЁМНЫХ ФИШИЧНЫХ СУЩНОСТЕЙ -------------------------
+    const characters = [
+        { name: "🥔 Картошка Фишичный", desc: "Ты — древний клубень. Зарываешь фишинговые ссылки, как картошку в грядку. Пожираешь пароли." },
+        { name: "😈 Злой Фишичный", desc: "Твоя злоба питает фишинговые штормы. Каждое письмо — кислотный крик." },
+        { name: "👾 Никита", desc: "Никита — тень спам-серверов. Маскируется под друга, но внутри только код распада." },
+        { name: "🐟 Гнилая Рыба-Фиш", desc: "Из глубин тёмного интернета, разлагаешь доверие ссылками-червями." },
+        { name: "💀 Скелетон Фиш", desc: "Древний спамер из 2007. Кости сложены из битых доменов." },
+        { name: "🍟 Чёрный Жареный Фиш", desc: "Твоя горячая фишинг-схема выжигает аккаунты. Вкус масла и кражи." },
+        { name: "🎭 Лицедей Теней", desc: "Срываешь маски, подделываешь личности — эксперт по двухфакторному взлому." },
+        { name: "🦊 Пепельный Лис", desc: "Плутовство в коде, ловишь жертв через обманчивые капчи." },
+        { name: "🧙 Некромант Фиш", desc: "Оживляет битые ссылки, проклятые формы входа." },
+        { name: "👑 Король Фиш-Фиш", desc: "Властелин похищенных куки, в его короне — тьма паролей." },
+        { name: "🤖 Кибер-Фиш дрон", desc: "Автоматизированная рассылка, твои письма пьют данные." },
+        { name: "👻 Призрак Фиш", desc: "Поддельная страница входа, невидимый сборщик сессий." },
+        { name: "🥴 Хмельной Багич", desc: "Пьяные фишинг-атаки с орфографическими ошибками, но почему-то работают." },
+        { name: "📦 Смертельный Трек", desc: "Под видом посылки крадёшь паспортные данные. Будь проклят." },
+        { name: "🎸 Мрачный Рокер", desc: "Фейковые билеты на концерты, слив аккаунтов под гитарный скрим." },
+        { name: "🧸 Плюшевый Псих", desc: "Милый мех — и леденящий душу фишинг в соцсетях." },
+        { name: "⚡ Электро-Мясо", desc: "Подделка сайтов банков, удар током украденных данных." },
+        { name: "🍄 Плесневый Гриб", desc: "Тёмные споры фишинга, разрастаешься на форумах." },
+        { name: "😤 Демон Фиш", desc: "Повелитель фейковых Netflix, смс-бэкдор." },
+        { name: "🧠 Мозг Фрактал", desc: "Гениальная схема, крадёшь всё — от OTP до отпечатков пальцев." }
+    ];
+
+    const SEGMENT_COUNT = characters.length;
+    let currentRotation = 0.98;
+    let isSpinning = false;
+    let spinAnimationId = null;
+    let spinDuration = 1500;
+    let targetSpinRotation = 0;
+
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // более тёмная, грязная палитра для секторов
+    const darkPalette = [
+        "#3D2B1A", "#4A3420", "#2F2A1F", "#53412A", "#3E2C21",
+        "#2D2418", "#5E452C", "#4A3724", "#382E1F", "#5F4A2E",
+        "#2F281D", "#634A2C", "#332A1C", "#523F26", "#2C221A",
+        "#473520", "#5E412B", "#3A2C1C", "#4A3B24", "#352919"
+    ];
+
+    function drawWheel(rotationRad = 0) {
+        const w = canvas.width, h = canvas.height;
+        const centerX = w/2, centerY = h/2;
+        const radius = w/2 - 10;
+        ctx.clearRect(0, 0, w, h);
+        
+        const angleStep = (Math.PI * 2) / SEGMENT_COUNT;
+        for (let i = 0; i < SEGMENT_COUNT; i++) {
+            const start = i * angleStep + rotationRad;
+            const end = (i+1) * angleStep + rotationRad;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, start, end);
+            ctx.fillStyle = darkPalette[i % darkPalette.length];
+            ctx.fill();
+            ctx.save();
+            ctx.strokeStyle = "#D9A05B";
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, start, end);
+            ctx.lineTo(centerX, centerY);
+            ctx.stroke();
+            ctx.restore();
+            
+            // текст на секторах - светлый, но мрачный
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(start + angleStep/2);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            const textRadius = radius * 0.68;
+            let shortName = characters[i].name;
+            if(shortName.length > 14) shortName = shortName.slice(0,12)+"..";
+            ctx.font = `bold ${Math.max(11, 16 - Math.floor(shortName.length/4))}px "Courier New", monospace`;
+            ctx.fillStyle = "#F7E5C2";
+            ctx.shadowBlur = 3;
+            ctx.shadowColor = "black";
+            ctx.fillText(shortName, textRadius, 6);
+            ctx.restore();
+        }
+        // центральный пивот — тёмный рубин
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 22, 0, 2*Math.PI);
+        ctx.fillStyle = "#37281c";
+        ctx.fill();
+        ctx.strokeStyle = "#d49742";
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(centerX+28, centerY);
+        ctx.lineTo(centerX+46, centerY-10);
+        ctx.lineTo(centerX+46, centerY+10);
+        ctx.fillStyle = "#bb6d2c";
+        ctx.fill();
+        // жёсткая метка сверху (стрелка указатель)
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - radius - 5);
+        ctx.lineTo(centerX-10, centerY - radius + 12);
+        ctx.lineTo(centerX+10, centerY - radius + 12);
+        ctx.fillStyle = "#b05f2a";
+        ctx.fill();
+        ctx.fillStyle = "#f5bc70";
+        ctx.font = "bold 18px monospace";
+        ctx.shadowBlur = 0;
+        ctx.fillText("▼", centerX-6, centerY - radius + 2);
+    }
+
+    function getWinnerIndexFromRotation(rotationRad) {
+        const pointerAngle = -Math.PI / 2;
+        let rawAngle = pointerAngle - rotationRad;
+        rawAngle = ((rawAngle % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
+        const segAngle = (Math.PI * 2) / SEGMENT_COUNT;
+        let idx = Math.floor(rawAngle / segAngle);
+        return idx % SEGMENT_COUNT;
+    }
+
+    function spinWheelTo(targetCharIndex) {
+        if(isSpinning) return;
+        const currentPointerIdx = getWinnerIndexFromRotation(currentRotation);
+        let deltaIdx = (targetCharIndex - currentPointerIdx + SEGMENT_COUNT) % SEGMENT_COUNT;
+        const extraFullRot = (Math.floor(Math.random() * 6) + 7) * 2 * Math.PI;
+        const anglePerSeg = (Math.PI * 2) / SEGMENT_COUNT;
+        let targetRotation = currentRotation + extraFullRot + deltaIdx * anglePerSeg;
+        targetRotation = targetRotation % (Math.PI*2);
+        
+        const startRot = currentRotation;
+        let deltaRot = targetRotation - startRot;
+        if (Math.abs(deltaRot) > Math.PI) deltaRot -= Math.sign(deltaRot) * 2*Math.PI;
+        
+        const startTime = performance.now();
+        isSpinning = true;
+        
+        function step(now) {
+            const elapsed = now - startTime;
+            let t = Math.min(1, elapsed / spinDuration);
+            const easeOutCubic = 1 - Math.pow(1-t, 3);
+            const newRot = startRot + deltaRot * easeOutCubic;
+            currentRotation = ((newRot % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
+            drawWheel(currentRotation);
+            if(t < 1) {
+                spinAnimationId = requestAnimationFrame(step);
+            } else {
+                currentRotation = targetRotation;
+                drawWheel(currentRotation);
+                const winnerIdx = getWinnerIndexFromRotation(currentRotation);
+                const winner = characters[winnerIdx];
+                document.getElementById('resultMessage').innerHTML = `◈ ВЫПАЛО: ${winner.name} ◈<br><span style="font-size:0.85rem; letter-spacing:0px">${winner.desc}</span>`;
+                isSpinning = false;
+                if(spinAnimationId) cancelAnimationFrame(spinAnimationId);
+                spinAnimationId = null;
+            }
+        }
+        if(spinAnimationId) cancelAnimationFrame(spinAnimationId);
+        spinAnimationId = requestAnimationFrame(step);
+    }
+
+    function randomSpin() {
+        if(isSpinning) return;
+        const randIdx = Math.floor(Math.random() * SEGMENT_COUNT);
+        spinWheelTo(randIdx);
+    }
+
+    function onCharacterClick(index) {
+        if(isSpinning) return;
+        const char = characters[index];
+        document.getElementById('resultMessage').innerHTML = `🜁 ${char.name} <br> ❝ ${char.desc} ❞`;
+        spinWheelTo(index);
+    }
+
+    function buildGrid() {
+        const grid = document.getElementById('charactersGrid');
+        grid.innerHTML = '';
+        characters.forEach((c, idx) => {
+            const card = document.createElement('div');
+            card.className = 'char-card';
+            card.innerHTML = `<span>${c.name}</span>`;
+            card.addEventListener('click', (e) => {
+                e.stopPropagation();
+                onCharacterClick(idx);
+            });
+            grid.appendChild(card);
+        });
+    }
+
+    function setupEvents() {
+        document.getElementById('spinButton').addEventListener('click', (e) => {
+            e.preventDefault();
+            randomSpin();
+        });
+        const wheelArea = document.getElementById('wheelClickArea');
+        wheelArea.addEventListener('click', (e) => {
+            if(!isSpinning) randomSpin();
+        });
+        canvas.style.cursor = "pointer";
+    }
+
+    function initWheel() {
+        currentRotation = 0.64;
+        drawWheel(currentRotation);
+    }
+
+    function fixCanvasSize() {
+        const container = canvas.parentElement;
+        let size = Math.min(container.clientWidth, 430);
+        size = Math.max(size, 280);
+        canvas.style.width = `${size}px`;
+        canvas.style.height = `${size}px`;
+        canvas.width = size;
+        canvas.height = size;
+        drawWheel(currentRotation);
+    }
+
+    buildGrid();
+    setupEvents();
+    initWheel();
+    window.addEventListener('resize', () => {
+        if(!isSpinning) fixCanvasSize();
+    });
+    setTimeout(fixCanvasSize, 40);
+    window.fixCanvasSize = fixCanvasSize;
+</script>
+</body>
+</html>
